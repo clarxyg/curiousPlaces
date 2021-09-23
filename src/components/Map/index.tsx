@@ -1,4 +1,3 @@
-import { map } from 'leaflet'
 import { useRouter } from 'next/dist/client/router'
 import { MapContainer, TileLayer, Marker, MapConsumer } from 'react-leaflet'
 import L from 'leaflet'

@@ -1,5 +1,10 @@
+import { map } from 'leaflet'
 import { useRouter } from 'next/dist/client/router'
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, MapConsumer } from 'react-leaflet'
+import L from 'leaflet'
+
+import * as S from './styles'
+
 type Place = {
   id: string
   name: string
@@ -29,33 +34,61 @@ const CustomTileLayer = () => {
   )
 }
 
+const markerIcon = new L.Icon({
+  iconUrl: 'pin.png',
+  iconSize: [38, 38],
+  iconAnchor: [20, 20],
+  popupAnchor: [0, -40]
+})
+
 const Map = ({ places }: MapProps) => {
   const router = useRouter()
 
   return (
-    <MapContainer
-      center={[0, 0]}
-      zoom={3}
-      style={{ height: '100%', width: '100%' }}
-    >
-      <CustomTileLayer />
-      {places?.map(({ id, name, slug, location }) => {
-        const { latitude, longitude } = location
+    <S.MapWrapper>
+      <MapContainer
+        center={[0, 0]}
+        zoom={3}
+        style={{ height: '100%', width: '100%' }}
+        minZoom={3}
+        maxBounds={[
+          [-180, 180],
+          [180, -180]
+        ]}
+      >
+        <MapConsumer>
+          {(map) => {
+            const width =
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth
 
-        return (
-          <Marker
-            key={`place-${id}`}
-            position={[latitude, longitude]}
-            title={name}
-            eventHandlers={{
-              click: () => {
-                router.push(`/place/${slug}`)
-              }
-            }}
-          />
-        )
-      })}
-    </MapContainer>
+            if (width < 768) {
+              map.setMinZoom(2)
+            }
+            return null
+          }}
+        </MapConsumer>
+        <CustomTileLayer />
+        {places?.map(({ id, name, slug, location }) => {
+          const { latitude, longitude } = location
+
+          return (
+            <Marker
+              key={`place-${id}`}
+              position={[latitude, longitude]}
+              title={name}
+              icon={markerIcon}
+              eventHandlers={{
+                click: () => {
+                  router.push(`/place/${slug}`)
+                }
+              }}
+            />
+          )
+        })}
+      </MapContainer>
+    </S.MapWrapper>
   )
 }
 export default Map

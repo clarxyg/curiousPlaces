@@ -219,6 +219,17 @@ module.exports = require("graphql-request");
 
 /***/ }),
 
+/***/ "leaflet":
+/*!**************************!*\
+  !*** external "leaflet" ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("leaflet");
+
+/***/ }),
+
 /***/ "next-seo":
 /*!***************************!*\
   !*** external "next-seo" ***!
